@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+**Kids News**
 
-TODO: Document your project here
+Kids News is a kid-friendly news application that helps kids follow news and is presented in a language understandable to them.
