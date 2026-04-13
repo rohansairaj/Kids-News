@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      articles: {
+        Row: {
+          category: Database["public"]["Enums"]["news_category"]
+          created_at: string
+          emoji: string | null
+          guid: string | null
+          id: string
+          image_url: string | null
+          kid_summary: string | null
+          kid_title: string | null
+          original_summary: string | null
+          original_title: string
+          published_at: string | null
+          source_id: string | null
+          source_name: string
+          source_url: string | null
+          state: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["news_category"]
+          created_at?: string
+          emoji?: string | null
+          guid?: string | null
+          id?: string
+          image_url?: string | null
+          kid_summary?: string | null
+          kid_title?: string | null
+          original_summary?: string | null
+          original_title: string
+          published_at?: string | null
+          source_id?: string | null
+          source_name: string
+          source_url?: string | null
+          state?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["news_category"]
+          created_at?: string
+          emoji?: string | null
+          guid?: string | null
+          id?: string
+          image_url?: string | null
+          kid_summary?: string | null
+          kid_title?: string | null
+          original_summary?: string | null
+          original_title?: string
+          published_at?: string | null
+          source_id?: string | null
+          source_name?: string
+          source_url?: string | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "news_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_sources: {
+        Row: {
+          added_by: string | null
+          category: Database["public"]["Enums"]["news_category"]
+          created_at: string
+          id: string
+          is_default: boolean
+          name: string
+          rss_url: string
+          state: string | null
+          url: string
+        }
+        Insert: {
+          added_by?: string | null
+          category: Database["public"]["Enums"]["news_category"]
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name: string
+          rss_url: string
+          state?: string | null
+          url: string
+        }
+        Update: {
+          added_by?: string | null
+          category?: Database["public"]["Enums"]["news_category"]
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name?: string
+          rss_url?: string
+          state?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +120,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      news_category: "sports" | "entertainment" | "global" | "local"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +247,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      news_category: ["sports", "entertainment", "global", "local"],
+    },
   },
 } as const
