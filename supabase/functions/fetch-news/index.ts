@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
               source_name: source.name,
               source_url: item.link,
               image_url: item.imageUrl,
-              published_at: new Date(item.pubDate).toISOString(),
+              published_at: safeDate(item.pubDate),
               guid: item.guid.slice(0, 500),
             },
             { onConflict: "guid" }
