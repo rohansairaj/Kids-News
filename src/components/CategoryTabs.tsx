@@ -1,4 +1,4 @@
-import { NewsCategory, categoryLabels } from "@/data/mockNews";
+import { NewsCategory, categoryConfig } from "@/data/newsTypes";
 
 interface CategoryTabsProps {
   active: NewsCategory | "all";
@@ -8,7 +8,7 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ active, onChange }: CategoryTabsProps) => {
   const tabs: { key: NewsCategory | "all"; label: string; emoji: string }[] = [
     { key: "all", label: "All News", emoji: "📰" },
-    ...Object.entries(categoryLabels).map(([key, val]) => ({
+    ...Object.entries(categoryConfig).map(([key, val]) => ({
       key: key as NewsCategory,
       label: val.label,
       emoji: val.emoji,
