@@ -60,6 +60,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        fun: {
+          purple: "hsl(var(--fun-purple))",
+          pink: "hsl(var(--fun-pink))",
+          green: "hsl(var(--fun-green))",
+          orange: "hsl(var(--fun-orange))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
