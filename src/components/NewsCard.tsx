@@ -1,6 +1,6 @@
+import { Link } from "react-router-dom";
 import { Article } from "@/hooks/useArticles";
 import { categoryConfig, NewsCategory } from "@/data/newsTypes";
-import { Clock, ExternalLink } from "lucide-react";
 
 interface NewsCardProps {
   article: Article;
@@ -14,10 +14,8 @@ const NewsCard = ({ article, featured = false }: NewsCardProps) => {
   const emoji = article.emoji || "📰";
 
   return (
-    <a
-      href={article.source_url || "#"}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to={`/article/${article.id}`}
       className={`group relative overflow-hidden rounded-2xl bg-card border-2 border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block ${
         featured ? "md:col-span-2 md:row-span-2" : ""
       }`}
@@ -75,11 +73,10 @@ const NewsCard = ({ article, featured = false }: NewsCardProps) => {
                 })}
               </span>
             )}
-            <ExternalLink className="w-3 h-3" />
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 
