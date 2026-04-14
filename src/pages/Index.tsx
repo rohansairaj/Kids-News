@@ -12,6 +12,7 @@ const Index = () => {
   const [activeCategory, setActiveCategory] = useState<NewsCategory | "all">("all");
   const [selectedState, setSelectedState] = useState("Maharashtra");
   const [showSources, setShowSources] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const { articles, loading, refetch } = useArticles(activeCategory, selectedState);
   const { refresh, refreshing } = useRefreshNews();
 
@@ -42,6 +43,26 @@ const Index = () => {
   const handleRefresh = async () => {
     await refresh();
     await refetch();
+    setLastUpdated(new Date());
+  };
+
+  // Set last updated from most recent article on load
+  useEffect(() => {
+    if (articles.length > 0 && !lastUpdated) {
+      const latest = articles[0]?.published_at;
+      if (latest) setLastUpdated(new Date(latest));
+    }
+  }, [articles, lastUpdated]);
+
+  const formatLastUpdated = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return "Just now";
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHrs = Math.floor(diffMin / 60);
+    if (diffHrs < 24) return `${diffHrs}h ago`;
+    return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
   };
 
   return (
