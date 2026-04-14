@@ -138,6 +138,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Immediately trigger AI simplification after fetching
+    if (totalInserted > 0) {
+      try {
+        const simplifyUrl = `${supabaseUrl}/functions/v1/simplify-news`;
+        await fetch(simplifyUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+          },
+          body: JSON.stringify({}),
+        });
+        console.log("Triggered simplify-news after fetch");
+      } catch (e) {
+        console.error("Failed to trigger simplify-news:", e);
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true, inserted: totalInserted }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
