@@ -72,8 +72,15 @@ const Index = () => {
       <main className="max-w-6xl mx-auto px-4 pb-16">
         {/* Controls bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <StateSelector selected={selectedState} onChange={setSelectedState} />
-
+          <div className="flex items-center gap-3">
+            <StateSelector selected={selectedState} onChange={setSelectedState} />
+            {lastUpdated && (
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold">
+                <Clock className="w-3.5 h-3.5" />
+                Updated {formatLastUpdated(lastUpdated)}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowSources(!showSources)}
