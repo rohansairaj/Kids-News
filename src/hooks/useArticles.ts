@@ -33,6 +33,13 @@ export function useArticles(category: NewsCategory | "all", state?: string) {
       query = query.eq("category", category);
     }
 
+    // Filter local news by selected state
+    if ((category === "local" || category === "all") && state) {
+      if (category === "local") {
+        query = query.eq("state", state);
+      }
+    }
+
     const { data, error } = await query;
     if (error) {
       console.error("Error fetching articles:", error);

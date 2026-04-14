@@ -6,7 +6,7 @@ import StateSelector from "@/components/StateSelector";
 import ManageSources from "@/components/ManageSources";
 import { useArticles, useRefreshNews } from "@/hooks/useArticles";
 import { NewsCategory } from "@/data/newsTypes";
-import { RefreshCw, Settings } from "lucide-react";
+import { RefreshCw, Settings, Clock } from "lucide-react";
 
 const Index = () => {
   const [activeCategory, setActiveCategory] = useState<NewsCategory | "all">("all");
