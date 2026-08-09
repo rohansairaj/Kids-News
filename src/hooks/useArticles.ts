@@ -58,13 +58,12 @@ export function useArticles(category: NewsCategory | "all", state?: string) {
 export function useRefreshNews() {
   const [refreshing, setRefreshing] = useState(false);
 
+  // News is fetched and simplified by trusted scheduled jobs on the backend.
+  // The client only re-reads the latest stored articles.
   const refresh = async () => {
     setRefreshing(true);
     try {
-      // Step 1: Fetch RSS
-      await supabase.functions.invoke("fetch-news", { body: {} });
-      // Step 2: Simplify with AI
-      await supabase.functions.invoke("simplify-news", { body: {} });
+      await supabase.from("articles").select("id").limit(1);
     } catch (e) {
       console.error("Error refreshing news:", e);
     }
