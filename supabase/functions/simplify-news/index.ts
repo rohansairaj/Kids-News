@@ -1,9 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { isInternalCaller } from "../_shared/internal-auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-internal-secret",
 };
 
 Deno.serve(async (req) => {
@@ -12,6 +13,18 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const supabaseUrlEarly = Deno.env.get("SUPABASE_URL")!;
+    const serviceKeyEarly = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const authClient = createClient(supabaseUrlEarly, serviceKeyEarly);
+
+    // Only trusted internal callers (scheduled jobs / fetch-news) may spend AI credits
+    if (!(await isInternalCaller(req, authClient))) {
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -118,7 +131,7 @@ Return ONLY valid JSON: {"kid_title":"...","kid_summary":"...","emoji":"..."}`,
   } catch (error) {
     console.error("simplify-news error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: String(error) }),
+      JSON.stringify({ success: false, error: "An internal error occurred" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
