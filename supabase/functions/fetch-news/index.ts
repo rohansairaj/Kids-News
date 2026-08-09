@@ -1,9 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { getInternalSecret, isInternalCaller } from "../_shared/internal-auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-internal-secret",
 };
 
 // Simple XML parser for RSS
@@ -91,6 +92,14 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // Only trusted internal callers (scheduled jobs) may trigger fetching
+    if (!(await isInternalCaller(req, supabase))) {
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Get optional category filter
     const { category } = await req.json().catch(() => ({}));
 
@@ -146,7 +155,7 @@ Deno.serve(async (req) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+            "x-internal-secret": (await getInternalSecret(supabase)) ?? "",
           },
           body: JSON.stringify({}),
         });
@@ -163,7 +172,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error("fetch-news error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: String(error) }),
+      JSON.stringify({ success: false, error: "An internal error occurred" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
